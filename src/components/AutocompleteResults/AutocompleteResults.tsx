@@ -1,11 +1,19 @@
-interface AutocompleteProps {
+interface AutocompleteResultsProps {
   results: string[];
+  handleClickResult: (result: string) => void;
 }
 
-export default function AutocompleteResults({ results }: AutocompleteProps) {
+export default function AutocompleteResults({
+  results,
+  handleClickResult,
+}: AutocompleteResultsProps) {
   return (
     <ul className="autocomplete-results">
-      {results.map((result, index) => <li key={index}>{result}</li>)}
+      {results.map((result, index) => (
+        <li onClick={() => handleClickResult(result)} key={index}>
+          {result}
+        </li>
+      ))}
     </ul>
-  )
+  );
 }

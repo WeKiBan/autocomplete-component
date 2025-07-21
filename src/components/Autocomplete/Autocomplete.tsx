@@ -1,18 +1,42 @@
-import { useState } from "react"
-import AutcompleteResults from "../AutocompleteResults/AutocompleteResults";
-import {useCountries}  from "../../hooks/useCountries";
-import {useFilter} from "../../hooks/useFilter";
+import BeatLoader from 'react-spinners/BeatLoader';
 
+import { useCountries } from '../../hooks/useCountries';
+import { useFilter } from '../../hooks/useFilter';
+import AutocompleteResults from '../AutocompleteResults/AutocompleteResults';
+import styles from './Autocomplete.module.css';
 
 export default function Autocomplete() {
-
-  const [query, setQuery] = useState<string>("");
-  const [ countries, loading, error] = useCountries()
-  const [filteredResults] = useFilter(query, countries);
+  const { countries, loading } = useCountries();
+  const { filteredResults, query, setQuery, setHasSelected, hasSelected } =
+    useFilter(countries);
+  const handleClickResult = (result: string) => {
+    setQuery(result);
+    setHasSelected(true);
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setHasSelected(false);
+  };
   return (
-    <div className="autocomplete">
-      <input onChange={(e) => setQuery(e.target.value) } value={query} type="text" placeholder="Type to search..." />
-      {query && filteredResults.length > 0 && <AutcompleteResults results={filteredResults} />}
+    <div className={styles.autocomplete}>
+      {loading ? (
+        <BeatLoader />
+      ) : (
+        <>
+          <input
+            onChange={handleChange}
+            value={query}
+            type="text"
+            placeholder="Type to search..."
+          />
+          {!hasSelected && query && filteredResults.length > 0 && (
+            <AutocompleteResults
+              handleClickResult={handleClickResult}
+              results={filteredResults}
+            />
+          )}
+        </>
+      )}
     </div>
-  )
+  );
 }

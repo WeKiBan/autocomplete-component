@@ -1,29 +1,35 @@
-import { useState, useEffect} from "react";
-import { filterData } from "../utils/filterData";
+import { useEffect, useState } from 'react';
 
-
+import { filterData } from '../utils/filterData';
 
 export const useFilter = (
-  query: string,
   countries: string[]
-): [string[], boolean, string | null] => {
+): {
+  filteredResults: string[];
+  filterLoading: boolean;
+  query: string;
+  hasSelected: boolean;
+  setQuery: (query: string) => void;
+  setFilteredResults: (results: string[]) => void;
+  setHasSelected: (hasSelected: boolean) => void;
+} => {
   const [filteredResults, setFilteredResults] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [filterLoading, setFilterLoading] = useState(false);
+  const [hasSelected, setHasSelected] = useState(false);
+  const [query, setQuery] = useState<string>('');
 
   useEffect(() => {
+    if (!countries.length) return;
     const filterResults = async () => {
-      setLoading(true);
-      setError(null); // Reset on new search
+      setFilterLoading(true);
 
       try {
         const response = await filterData(query, countries);
         setFilteredResults(response);
       } catch (err) {
-        console.error("Error filtering data:", err);
-        setError(err instanceof Error ? err.message : String(err));
+        console.error('Error filtering data:', err);
       } finally {
-        setLoading(false);
+        setFilterLoading(false);
       }
     };
 
@@ -34,5 +40,13 @@ export const useFilter = (
     return () => clearTimeout(debounce);
   }, [query, countries]);
 
-  return [filteredResults, loading, error];
+  return {
+    filteredResults,
+    setFilteredResults,
+    filterLoading,
+    query,
+    setQuery,
+    hasSelected,
+    setHasSelected,
+  };
 };
