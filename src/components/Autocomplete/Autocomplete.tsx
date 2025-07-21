@@ -1,22 +1,23 @@
 import BeatLoader from 'react-spinners/BeatLoader';
 
+import { useAutocomplete } from '../../hooks/useAutocomplete';
 import { useCountries } from '../../hooks/useCountries';
-import { useFilter } from '../../hooks/useFilter';
 import AutocompleteResults from '../AutocompleteResults/AutocompleteResults';
 import styles from './Autocomplete.module.css';
 
 export default function Autocomplete() {
   const { countries, loading } = useCountries();
-  const { filteredResults, query, setQuery, setHasSelected, hasSelected } =
-    useFilter(countries);
-  const handleClickResult = (result: string) => {
-    setQuery(result);
-    setHasSelected(true);
-  };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    setHasSelected(false);
-  };
+  const {
+  inputValue,
+  query,
+  filteredResults,
+  selectedIndex,
+  hasSelected,
+  handleChange,
+  handleKeyDown,
+  handleClickResult,
+} = useAutocomplete(countries);
+
   return (
     <div className={styles.autocomplete}>
       {loading ? (
@@ -25,7 +26,8 @@ export default function Autocomplete() {
         <>
           <input
             onChange={handleChange}
-            value={query}
+            onKeyDown={handleKeyDown}
+            value={inputValue}
             type="text"
             placeholder="Type to search..."
           />
@@ -33,6 +35,7 @@ export default function Autocomplete() {
             <AutocompleteResults
               handleClickResult={handleClickResult}
               results={filteredResults}
+              selectedIndex={selectedIndex}
             />
           )}
         </>

@@ -1,0 +1,15 @@
+.autocompleteResults {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+  border: solid 1px lightgrey;
+}
+
+.selected {
+  background-color: lightgrey;
+}
