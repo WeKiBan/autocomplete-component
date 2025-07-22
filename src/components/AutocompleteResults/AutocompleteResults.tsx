@@ -2,14 +2,14 @@ import styles from './AutocompleteResults.module.css';
 
 interface AutocompleteResultsProps {
   results: string[];
-  handleClickResult: (result: string) => void;
   selectedIndex: number | null;
+  handleClickResult: (result: string) => void;
 }
 
 export default function AutocompleteResults({
   results,
-  handleClickResult,
   selectedIndex,
+  handleClickResult,
 }: AutocompleteResultsProps) {
   return (
     <ul className={styles.autocompleteResults}>
